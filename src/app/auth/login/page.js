@@ -3,118 +3,87 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Login() {
-  const router = useRouter();
-  const [phone, setPhone] = useState("");
+export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSendOTP = () => {
-    if (phone.length !== 10) {
-      alert("Enter valid 10-digit number");
+  const router = useRouter();
+
+  const handleSendOTP = async () => {
+    // ✅ Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email) {
+      alert("Please enter your email");
       return;
     }
 
-    router.push(`/auth/otp?phone=${phone}`);
+    if (!emailRegex.test(email)) {
+      alert("Enter a valid email");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/send-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        // ✅ Store OTP + expiry (5 min)
+        localStorage.setItem("otp", data.otp);
+        localStorage.setItem("otpExpiry", Date.now() + 5 * 60 * 1000);
+        localStorage.setItem("otpEmail", email);
+
+        alert("OTP sent successfully!");
+
+        router.push(`/auth/verify-otp?email=${email}`);
+      } else {
+        alert("Failed to send OTP");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div style={page}>
-      <div style={card}>
-        
-        <div style={logo}>🛒</div>
+    <main className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
+        <h1 className="text-3xl font-bold text-green-600 text-center mb-2">
+          Login
+        </h1>
 
-        <h2 style={title}>Login to Grocify</h2>
-
-        <p style={subtitle}>
-          Enter your mobile number to continue
+        <p className="text-center text-gray-500 mb-6">
+          Enter your email to receive OTP
         </p>
 
-        <div style={inputBox}>
-          <span style={{ marginRight: "5px" }}>+91</span>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full border p-3 rounded-lg mb-4"
+        />
 
-          <input
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="Mobile number"
-            style={input}
-          />
-        </div>
-
-        <button onClick={handleSendOTP} style={button}>
-          Send OTP
+        <button
+          onClick={handleSendOTP}
+          disabled={loading}
+          className={`w-full py-3 rounded-lg font-semibold text-white transition 
+            ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`}
+        >
+          {loading ? "Sending OTP..." : "Send OTP"}
         </button>
-
-        <p style={smallText}>
-          We will send a verification code
-        </p>
       </div>
-    </div>
+    </main>
   );
 }
-
-/* ---------- STYLES ---------- */
-
-const page = {
-  height: "100vh",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  background: "linear-gradient(to bottom, #e8f5e9, #ffffff)",
-};
-
-const card = {
-  width: "90%",
-  maxWidth: "360px",
-  background: "white",
-  padding: "25px",
-  borderRadius: "20px",
-  boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-  textAlign: "center",
-};
-
-const logo = {
-  fontSize: "40px",
-  marginBottom: "10px",
-};
-
-const title = {
-  color: "#00C853",
-  marginBottom: "5px",
-};
-
-const subtitle = {
-  fontSize: "13px",
-  color: "#777",
-  marginBottom: "20px",
-};
-
-const inputBox = {
-  display: "flex",
-  alignItems: "center",
-  border: "1px solid #ddd",
-  borderRadius: "10px",
-  padding: "10px",
-  marginBottom: "15px",
-};
-
-const input = {
-  border: "none",
-  outline: "none",
-  width: "100%",
-  fontSize: "16px",
-};
-
-const button = {
-  width: "100%",
-  padding: "12px",
-  background: "#00C853",
-  color: "white",
-  border: "none",
-  borderRadius: "10px",
-  fontWeight: "bold",
-};
-
-const smallText = {
-  fontSize: "11px",
-  color: "#888",
-  marginTop: "10px",
-};
