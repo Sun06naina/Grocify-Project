@@ -9,19 +9,21 @@ export default function Splash() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push("/permissions/location");
+      router.push("/welcome"); // 👈 next page
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [router]);
 
   return (
     <div style={{
-      display: "flex",
       height: "100vh",
+      display: "flex",
+      flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
-      flexDirection: "column"
+      background: "linear-gradient(to bottom, #00C853, #B2FF59)",
+      color: "white",
     }}>
       <Image
         src="/grocify-logo.jpeg"
@@ -29,7 +31,9 @@ export default function Splash() {
         width={120}
         height={120}
       />
-      <h1>Grocify</h1>
+
+      <h1 style={{ marginTop: "20px" }}>Grocify</h1>
+      <p>Fresh groceries delivered fast ⚡</p>
     </div>
   );
 }

@@ -1,31 +1,20 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-export default function LoginPage() {
+export default function Login() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
-
-  const handleSendOTP = async () => {
-    // ✅ Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!email) {
-      alert("Please enter your email");
-      return;
-    }
-
-    if (!emailRegex.test(email)) {
-      alert("Enter a valid email");
-      return;
-    }
-
-    setLoading(true);
+  const handleLogin = async () => {
+    if (!email) return alert("Enter email");
 
     try {
+      setLoading(true);
+
+      // ✅ CALL YOUR OTP API
       const res = await fetch("/api/send-otp", {
         method: "POST",
         headers: {
@@ -36,20 +25,22 @@ export default function LoginPage() {
 
       const data = await res.json();
 
-      if (data.success) {
-        // ✅ Store OTP + expiry (5 min)
-        localStorage.setItem("otp", data.otp);
-        localStorage.setItem("otpExpiry", Date.now() + 5 * 60 * 1000);
-        localStorage.setItem("otpEmail", email);
-
-        alert("OTP sent successfully!");
-
-        router.push(`/auth/verify-otp?email=${email}`);
-      } else {
+      if (!data.success) {
         alert("Failed to send OTP");
+        return;
       }
-    } catch (error) {
-      console.error(error);
+
+      // (TEMP for testing only)
+      localStorage.setItem("otp", data.otp);
+      localStorage.setItem("otpExpiry", Date.now() + 5 * 60 * 1000);
+
+      alert("OTP sent to email ✔");
+
+      // 👉 go to verify page
+      router.push(`/auth/verify-otp?email=${email}`);
+
+    } catch (err) {
+      console.log(err);
       alert("Something went wrong");
     } finally {
       setLoading(false);
@@ -57,33 +48,57 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-green-600 text-center mb-2">
-          Login
-        </h1>
+    <div style={{
+      minHeight: "100vh",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      background: "#f5f5f5"
+    }}>
+      
+      <div style={{
+        width: "90%",
+        maxWidth: "400px",
+        background: "white",
+        padding: "20px",
+        borderRadius: "12px",
+        boxShadow: "0 5px 20px rgba(0,0,0,0.1)"
+      }}>
 
-        <p className="text-center text-gray-500 mb-6">
-          Enter your email to receive OTP
-        </p>
+        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+          Login to Grocify
+        </h2>
 
         <input
-          type="email"
-          placeholder="Enter your email"
+          placeholder="Enter email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full border p-3 rounded-lg mb-4"
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "15px",
+            border: "1px solid #ccc",
+            borderRadius: "8px"
+          }}
         />
 
         <button
-          onClick={handleSendOTP}
+          onClick={handleLogin}
           disabled={loading}
-          className={`w-full py-3 rounded-lg font-semibold text-white transition 
-            ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`}
+          style={{
+            width: "100%",
+            padding: "12px",
+            background: "#00C853",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            fontWeight: "bold"
+          }}
         >
           {loading ? "Sending OTP..." : "Send OTP"}
         </button>
+
       </div>
-    </main>
+    </div>
   );
 }

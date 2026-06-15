@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "Fresh Apples",
+    "brand": "Farm Fresh",
+    "price": 120,
+    "discount": 10,
+    "category": "Fruits",
+    "image": "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce"
+  },
+  {
+    "id": 2,
+    "name": "Bananas",
+    "brand": "Organic Farm",
+    "price": 60,
+    "discount": 5,
+    "category": "Fruits",
+    "image": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e"
+  },
+  {
+    "id": 3,
+    "name": "Amul Milk",
+    "brand": "Amul",
+    "price": 55,
+    "discount": 5,
+    "category": "Dairy",
+    "image": "https://images.unsplash.com/photo-1550583724-b2692b85b150"
+  },
+  {
+    "id": 4,
+    "name": "Potato",
+    "brand": "Fresh Farm",
+    "price": 40,
+    "discount": 8,
+    "category": "Vegetables",
+    "image": "https://images.unsplash.com/photo-1518977676601-b53f82aba655"
+  },
+  {
+    "id": 5,
+    "name": "Coca Cola",
+    "brand": "Coca Cola",
+    "price": 40,
+    "discount": 15,
+    "category": "Beverages",
+    "image": "https://images.unsplash.com/photo-1554866585-cd94860890b7"
+  }
+]
