@@ -3,7 +3,8 @@ const nextConfig = {
     domains: [
       "fakestoreapi.com",
       "images.unsplash.com",
-      "cdn.dummyjson.com"
+      "cdn.dummyjson.com",
+      "via.placeholder.com"
     ],
   },
 };

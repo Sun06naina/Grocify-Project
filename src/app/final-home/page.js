@@ -1,21 +1,38 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function FinalHome() {
+  const router = useRouter();
+
   const [products, setProducts] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [address, setAddress] = useState(null);
 
   useEffect(() => {
-    fetch("/api/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data))
-      .catch((err) => console.log(err));
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products");
+        const data = await res.json();
 
-    const saved = localStorage.getItem("address");
-    if (saved) {
-      setAddress(JSON.parse(saved));
+        console.log("API RESPONSE:", data);
+
+        const productsArray = data.data || data || [];
+        setProducts(productsArray);
+      } catch (err) {
+        console.log("Fetch error:", err);
+      }
+    };
+
+    fetchProducts();
+
+    const login = localStorage.getItem("isLoggedIn");
+    setIsLoggedIn(login === "true");
+
+    const savedAddress = localStorage.getItem("address");
+    if (savedAddress) {
+      setAddress(JSON.parse(savedAddress));
     }
   }, []);
 
@@ -24,9 +41,9 @@ export default function FinalHome() {
 
     cart.push({
       id: item.id,
-      title: item.title,
+      name: item.name,
       price: item.price,
-      thumbnail: item.thumbnail,
+      image: item.image,
       qty: 1,
     });
 
@@ -44,6 +61,7 @@ export default function FinalHome() {
         paddingBottom: "80px",
       }}
     >
+      {/* HEADER */}
       <header
         style={{
           background: "#00C853",
@@ -53,21 +71,64 @@ export default function FinalHome() {
           marginBottom: "15px",
         }}
       >
-        <h2>🛒 Grocify</h2>
-
         <div
           style={{
-            background: "white",
-            color: "black",
-            padding: "8px",
-            borderRadius: "10px",
-            marginTop: "10px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          📍 {address?.location || "Select Location"}
+          <h2>🛒 Grocify</h2>
+
+          {isLoggedIn ? (
+            <button
+              onClick={() => router.push("/profile")}
+              style={{
+                background: "white",
+                color: "#00C853",
+                border: "none",
+                padding: "8px 15px",
+                borderRadius: "8px",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              👤 Profile
+            </button>
+          ) : (
+            <button
+              onClick={() => router.push("/auth/login")}
+              style={{
+                background: "white",
+                color: "#00C853",
+                border: "none",
+                padding: "8px 15px",
+                borderRadius: "8px",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              Login
+            </button>
+          )}
         </div>
       </header>
 
+      {/* ADDRESS */}
+      {isLoggedIn && address && (
+        <div
+          style={{
+            background: "white",
+            padding: "10px",
+            borderRadius: "10px",
+            marginBottom: "15px",
+          }}
+        >
+          📍 {address.flat}, {address.apartment}, {address.location}
+        </div>
+      )}
+
+      {/* SEARCH */}
       <input
         type="text"
         placeholder="🔍 Search groceries..."
@@ -80,6 +141,7 @@ export default function FinalHome() {
         }}
       />
 
+      {/* CATEGORIES */}
       <h3>Categories</h3>
 
       <div
@@ -90,23 +152,52 @@ export default function FinalHome() {
           marginBottom: "20px",
         }}
       >
-        <div style={{ background: "white", padding: "15px", borderRadius: "10px", textAlign: "center" }}>
+        <div
+          style={{
+            background: "white",
+            padding: "15px",
+            borderRadius: "10px",
+            textAlign: "center",
+          }}
+        >
           🥬 Grocery & Kitchen
         </div>
 
-        <div style={{ background: "white", padding: "15px", borderRadius: "10px", textAlign: "center" }}>
+        <div
+          style={{
+            background: "white",
+            padding: "15px",
+            borderRadius: "10px",
+            textAlign: "center",
+          }}
+        >
           🍟 Snacks & Drinks
         </div>
 
-        <div style={{ background: "white", padding: "15px", borderRadius: "10px", textAlign: "center" }}>
+        <div
+          style={{
+            background: "white",
+            padding: "15px",
+            borderRadius: "10px",
+            textAlign: "center",
+          }}
+        >
           💄 Beauty & Personal Care
         </div>
 
-        <div style={{ background: "white", padding: "15px", borderRadius: "10px", textAlign: "center" }}>
+        <div
+          style={{
+            background: "white",
+            padding: "15px",
+            borderRadius: "10px",
+            textAlign: "center",
+          }}
+        >
           🏠 Household Essentials
         </div>
       </div>
 
+      {/* PRODUCTS */}
       <h3>🔥 Best Sellers</h3>
 
       <div
@@ -126,14 +217,18 @@ export default function FinalHome() {
               textAlign: "center",
             }}
           >
-            <Image
-              src={item.thumbnail || "/placeholder.png"}
-              width={120}
-              height={100}
-              alt={item.title || "Product"}
+            <img
+              src={item.image}
+              alt={item.name}
+              width="120"
+              height="100"
+              style={{
+                objectFit: "contain",
+                marginBottom: "10px",
+              }}
             />
 
-            <h4>{item.title}</h4>
+            <h4 style={{ fontSize: "14px" }}>{item.name}</h4>
 
             <p>₹{item.price}</p>
 
@@ -154,6 +249,7 @@ export default function FinalHome() {
         ))}
       </div>
 
+      {/* BOTTOM NAV */}
       <div
         style={{
           position: "fixed",

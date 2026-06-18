@@ -50,16 +50,18 @@ export default function VerifyOTPPage() {
       return;
     }
 
-    if (otp === savedOTP) {
-      alert("Login Successful!");
+   if (otp === savedOTP) {
+  alert("Login Successful!");
 
-      localStorage.removeItem("otp");
-      localStorage.removeItem("otpExpiry");
+  localStorage.setItem("isLoggedIn", "true");
 
-      router.push("/permissions/location");
-    } else {
-      alert("Invalid OTP");
-    }
+  localStorage.removeItem("otp");
+  localStorage.removeItem("otpExpiry");
+
+  router.push("/permissions/location");
+} else {
+  alert("Invalid OTP");
+}
   };
 
   const handleResendOTP = () => {
@@ -76,7 +78,7 @@ export default function VerifyOTPPage() {
 
         <p className="text-center text-gray-500 mb-2">
           OTP sent to {email}
-        </p>
+        </p>git remote set-url origin https://github.com/Sun06naina/Groccifyy.git
 
         {/* ✅ LIVE TIMER */}
         <p className="text-center text-red-500 font-semibold mb-4">

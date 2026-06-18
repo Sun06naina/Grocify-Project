@@ -10,6 +10,31 @@ export default function CartPage() {
     setCartItems(cart);
   }, []);
 
+  const updateCart = (updatedCart) => {
+    setCartItems(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
+  const increaseQty = (index) => {
+    const updated = [...cartItems];
+    updated[index].qty += 1;
+    updateCart(updated);
+  };
+
+  const decreaseQty = (index) => {
+    const updated = [...cartItems];
+
+    if (updated[index].qty > 1) {
+      updated[index].qty -= 1;
+      updateCart(updated);
+    }
+  };
+
+  const removeItem = (index) => {
+    const updated = cartItems.filter((_, i) => i !== index);
+    updateCart(updated);
+  };
+
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.qty,
     0
@@ -41,7 +66,39 @@ export default function CartPage() {
             >
               <h3>{item.title}</h3>
               <p>₹{item.price}</p>
-              <p>Quantity: {item.qty}</p>
+
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "center",
+                  marginTop: "10px",
+                }}
+              >
+                <button onClick={() => decreaseQty(index)}>
+                  ➖
+                </button>
+
+                <span>{item.qty}</span>
+
+                <button onClick={() => increaseQty(index)}>
+                  ➕
+                </button>
+
+                <button
+                  onClick={() => removeItem(index)}
+                  style={{
+                    marginLeft: "auto",
+                    background: "red",
+                    color: "white",
+                    border: "none",
+                    padding: "5px 10px",
+                    borderRadius: "5px",
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
             </div>
           ))}
 
@@ -55,19 +112,22 @@ export default function CartPage() {
           >
             <h2>Total: ₹{total}</h2>
 
-            <button
+            <a
+              href="/payment"
               style={{
+                display: "block",
                 width: "100%",
                 background: "#00C853",
                 color: "white",
-                border: "none",
                 padding: "12px",
                 borderRadius: "10px",
-                fontSize: "16px",
+                textAlign: "center",
+                textDecoration: "none",
+                boxSizing: "border-box",
               }}
             >
               Proceed to Checkout
-            </button>
+            </a>
           </div>
         </>
       )}

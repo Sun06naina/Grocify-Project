@@ -34,6 +34,9 @@ export default function Login() {
       localStorage.setItem("otp", data.otp);
       localStorage.setItem("otpExpiry", Date.now() + 5 * 60 * 1000);
 
+      // ✅ REQUIRED LINE ADDED HERE
+      localStorage.setItem("email", email);
+
       alert("OTP sent to email ✔");
 
       // 👉 go to verify page
@@ -48,23 +51,25 @@ export default function Login() {
   };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      background: "#f5f5f5"
-    }}>
-      
-      <div style={{
-        width: "90%",
-        maxWidth: "400px",
-        background: "white",
-        padding: "20px",
-        borderRadius: "12px",
-        boxShadow: "0 5px 20px rgba(0,0,0,0.1)"
-      }}>
-
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "#f5f5f5",
+      }}
+    >
+      <div
+        style={{
+          width: "90%",
+          maxWidth: "400px",
+          background: "white",
+          padding: "20px",
+          borderRadius: "12px",
+          boxShadow: "0 5px 20px rgba(0,0,0,0.1)",
+        }}
+      >
         <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
           Login to Grocify
         </h2>
@@ -78,7 +83,7 @@ export default function Login() {
             padding: "10px",
             marginBottom: "15px",
             border: "1px solid #ccc",
-            borderRadius: "8px"
+            borderRadius: "8px",
           }}
         />
 
@@ -92,12 +97,11 @@ export default function Login() {
             color: "white",
             border: "none",
             borderRadius: "8px",
-            fontWeight: "bold"
+            fontWeight: "bold",
           }}
         >
           {loading ? "Sending OTP..." : "Send OTP"}
         </button>
-
       </div>
     </div>
   );
