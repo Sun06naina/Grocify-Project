@@ -17,6 +17,7 @@ export async function POST(req) {
       },
     });
 
+console.log("Sending OTP to:", email);
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
@@ -28,20 +29,18 @@ export async function POST(req) {
         <p>This OTP is valid for login verification.</p>
       `,
     });
+    console.log("OTP sent successfully");
 
     return Response.json({
       success: true,
       otp,
     });
   } catch (error) {
-    console.error(error);
+  console.error("OTP ERROR:", error);
 
-    return Response.json(
-      {
-        success: false,
-        message: "Failed to send OTP",
-      },
-      { status: 500 }
-    );
-  }
+  return Response.json({
+    success: false,
+    message: error.message,
+  });
+}
 }

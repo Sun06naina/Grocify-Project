@@ -33,6 +33,7 @@ export default function VerifyOTPPage() {
   const formatTime = (ms) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);
+
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
@@ -50,38 +51,93 @@ export default function VerifyOTPPage() {
       return;
     }
 
-   if (otp === savedOTP) {
-  alert("Login Successful!");
+    if (otp === savedOTP) {
+      alert("Login Successful!");
 
-  localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("isLoggedIn", "true");
 
-  localStorage.removeItem("otp");
-  localStorage.removeItem("otpExpiry");
+      localStorage.removeItem("otp");
+      localStorage.removeItem("otpExpiry");
 
-  router.push("/permissions/location");
-} else {
-  alert("Invalid OTP");
-}
+      router.push("/permissions/location");
+    } else {
+      alert("Invalid OTP");
+    }
   };
 
   const handleResendOTP = () => {
-    alert("Connect your Send OTP API here");
+    alert("Resend OTP functionality coming soon");
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
+    <main
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "#f5f5f5",
+        padding: "20px",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "420px",
+          background: "white",
+          padding: "30px",
+          borderRadius: "20px",
+          boxShadow: "0 5px 20px rgba(0,0,0,0.1)",
+        }}
+      >
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "60px",
+            marginBottom: "10px",
+          }}
+        >
+          🔐
+        </div>
 
-        <h1 className="text-3xl font-bold text-green-600 text-center mb-2">
+        <h2
+          style={{
+            textAlign: "center",
+            color: "#00C853",
+            marginBottom: "10px",
+          }}
+        >
           Verify OTP
-        </h1>
+        </h2>
 
-        <p className="text-center text-gray-500 mb-2">
-          OTP sent to {email}
-        </p>git remote set-url origin https://github.com/Sun06naina/Groccifyy.git
+        <p
+          style={{
+            textAlign: "center",
+            color: "#666",
+            marginBottom: "10px",
+          }}
+        >
+          OTP sent to
+        </p>
 
-        {/* ✅ LIVE TIMER */}
-        <p className="text-center text-red-500 font-semibold mb-4">
+        <p
+          style={{
+            textAlign: "center",
+            fontWeight: "bold",
+            marginBottom: "20px",
+          }}
+        >
+          {email}
+        </p>
+
+        <p
+          style={{
+            textAlign: "center",
+            color: "red",
+            fontWeight: "bold",
+            marginBottom: "15px",
+          }}
+        >
           OTP expires in: {formatTime(timeLeft)}
         </p>
 
@@ -90,19 +146,45 @@ export default function VerifyOTPPage() {
           placeholder="Enter OTP"
           value={otp}
           onChange={(e) => setOtp(e.target.value)}
-          className="w-full border p-3 rounded-lg mb-4"
+          style={{
+            width: "100%",
+            padding: "14px",
+            border: "1px solid #ddd",
+            borderRadius: "10px",
+            marginBottom: "15px",
+            boxSizing: "border-box",
+          }}
         />
 
         <button
           onClick={handleVerify}
-          className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold mb-3"
+          style={{
+            width: "100%",
+            padding: "14px",
+            background: "#00C853",
+            color: "white",
+            border: "none",
+            borderRadius: "10px",
+            fontWeight: "bold",
+            cursor: "pointer",
+            marginBottom: "10px",
+          }}
         >
           Verify OTP
         </button>
 
         <button
           onClick={handleResendOTP}
-          className="w-full border border-green-600 text-green-600 py-3 rounded-lg font-semibold"
+          style={{
+            width: "100%",
+            padding: "14px",
+            background: "white",
+            color: "#00C853",
+            border: "2px solid #00C853",
+            borderRadius: "10px",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
         >
           Resend OTP
         </button>

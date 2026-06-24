@@ -13,8 +13,6 @@ export default function Login() {
 
     try {
       setLoading(true);
-
-      // ✅ CALL YOUR OTP API
       const res = await fetch("/api/send-otp", {
         method: "POST",
         headers: {
@@ -26,9 +24,9 @@ export default function Login() {
       const data = await res.json();
 
       if (!data.success) {
-        alert("Failed to send OTP");
-        return;
-      }
+  alert(data.message);
+  return;
+}
 
       // (TEMP for testing only)
       localStorage.setItem("otp", data.otp);

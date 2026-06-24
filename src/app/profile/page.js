@@ -3,97 +3,118 @@
 import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
 
   useEffect(() => {
+    const savedName = localStorage.getItem("name");
+    if (savedName) setName(savedName);
+
     const savedEmail = localStorage.getItem("email");
-    if (savedEmail) {
-      setEmail(savedEmail);
-    }
+    if (savedEmail) setEmail(savedEmail);
 
     const savedAddress = localStorage.getItem("address");
+
     if (savedAddress) {
       const addr = JSON.parse(savedAddress);
-      setAddress(addr.location || "");
+
+      setAddress(
+        `${addr.flat || ""}, ${addr.apartment || ""}, ${addr.location || ""}`
+      );
     }
   }, []);
+
+  const logout = () => {
+    localStorage.clear();
+    window.location.href = "/";
+  };
 
   return (
     <main
       style={{
-        padding: "20px",
-        background: "#f5f5f5",
         minHeight: "100vh",
+        background: "#f5f5f5",
+        padding: "20px",
       }}
     >
-      <h1>👤 My Profile</h1>
-
       <div
         style={{
-          background: "white",
-          padding: "20px",
-          borderRadius: "10px",
-          marginTop: "20px",
+          background: "#00C853",
+          color: "white",
+          padding: "30px",
+          borderRadius: "20px",
+          textAlign: "center",
         }}
       >
-        <h3>User</h3>
-        <p>📧 {email}</p>
-        <p>📍 {address}</p>
+        <div style={{ fontSize: "70px" }}>👤</div>
+
+        <h2>{name || "User"}</h2>
+
+        <p>{email}</p>
       </div>
 
       <div
         style={{
           background: "white",
-          padding: "15px",
-          borderRadius: "10px",
-          marginTop: "15px",
+          marginTop: "20px",
+          borderRadius: "15px",
+          padding: "20px",
         }}
       >
-        <a
-          href="/orders"
-          style={{
-            textDecoration: "none",
-            color: "black",
-          }}
-        >
+        <h3>Personal Information</h3>
+
+        <p>
+          <strong>👤 Name:</strong> {name}
+        </p>
+
+        <p>
+          <strong>📧 Email:</strong> {email}
+        </p>
+
+        <p>
+          <strong>📍 Address:</strong> {address}
+        </p>
+      </div>
+
+      <div
+        style={{
+          background: "white",
+          marginTop: "15px",
+          borderRadius: "15px",
+          overflow: "hidden",
+        }}
+      >
+        <a href="/orders" style={menuStyle}>
           📦 My Orders
         </a>
-      </div>
 
-      <div
-        style={{
-          background: "white",
-          padding: "15px",
-          borderRadius: "10px",
-          marginTop: "15px",
-        }}
-      >
-        <a
-          href="/final-home"
-          style={{
-            textDecoration: "none",
-            color: "black",
-          }}
-        >
+        <a href="/wishlist" style={menuStyle}>
+          ❤️ Wishlist
+        </a>
+
+        <a href="/cart" style={menuStyle}>
+          🛒 Cart
+        </a>
+
+        <a href="/final-home" style={menuStyle}>
           🏠 Home
         </a>
       </div>
 
       <button
-        onClick={() => {
-          localStorage.clear();
-          window.location.href = "/";
-        }}
+        onClick={logout}
         style={{
           width: "100%",
           marginTop: "20px",
-          background: "red",
+          padding: "14px",
+          background: "#ff4444",
           color: "white",
           border: "none",
-          padding: "12px",
-          borderRadius: "10px",
+          borderRadius: "12px",
           fontSize: "16px",
+          fontWeight: "bold",
+          cursor: "pointer",
         }}
       >
         Logout
@@ -101,3 +122,11 @@ export default function ProfilePage() {
     </main>
   );
 }
+
+const menuStyle = {
+  display: "block",
+  padding: "16px",
+  textDecoration: "none",
+  color: "#333",
+  borderBottom: "1px solid #eee",
+};

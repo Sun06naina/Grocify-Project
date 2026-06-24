@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 export default function LocationPermission() {
   const router = useRouter();
 
-  const next = () => {
-    router.push("/permissions/notification");
-  };
+ const handleContinue = () => {
+  router.push("/permissions/notification");
+};
 
   return (
     <div
@@ -31,7 +31,7 @@ export default function LocationPermission() {
         }}
       >
         {/* ICON */}
-        <div style={{ fontSize: "50px", marginBottom: "10px" }}>
+        <div style={{ fontSize: "70px", marginBottom: "15px" }}>
           📍
         </div>
 
@@ -41,28 +41,29 @@ export default function LocationPermission() {
         </h2>
 
         <p style={{ fontSize: "13px", color: "#666" }}>
-          Allow location access to show nearby stores, faster delivery & accurate address selection
+          Enable location to discover nearby stores, faster delivery and a smoother shopping experience.
         </p>
 
         {/* OPTIONS CARD */}
-        <div style={{ marginTop: "20px", textAlign: "left" }}>
-          
-          <div style={boxStyle}>
-            📍 Allow Location
-          </div>
+        <div
+  style={{
+    marginTop: "20px",
+    background: "#F1F8E9",
+    padding: "15px",
+    borderRadius: "12px",
+    textAlign: "left",
+    color: "#2E7D32",
+    fontSize: "14px",
+  }}
+>
+  📍 Your location helps us find nearby stores, show
+  accurate delivery times and auto-fill your address.
+</div>
 
-          <div style={boxStyle}>
-            ⏱ Allow While Using App
-          </div>
-
-          <div style={boxStyle}>
-            ❌ Don't Allow
-          </div>
-        </div>
 
         {/* BUTTON */}
         <button
-          onClick={next}
+          onClick={handleContinue}
           style={{
             marginTop: "20px",
             width: "100%",
@@ -75,7 +76,7 @@ export default function LocationPermission() {
             fontSize: "14px",
           }}
         >
-          Continue
+          Allow Location Access
         </button>
 
         <p style={{ fontSize: "11px", color: "#888", marginTop: "10px" }}>
