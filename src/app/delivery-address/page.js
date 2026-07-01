@@ -15,15 +15,18 @@ export default function DeliveryAddress() {
 
   const submit = () => {
     if (!form.name || !form.location) {
-      alert("Please fill required fields");
+      alert("Please fill all required fields.");
       return;
     }
 
+    // Save user name
     localStorage.setItem("name", form.name);
 
+    // Save complete address
     localStorage.setItem(
       "address",
       JSON.stringify({
+        name: form.name,
         flat: form.flat,
         apartment: form.apartment,
         location: form.location,
@@ -48,27 +51,17 @@ export default function DeliveryAddress() {
         style={{
           width: "100%",
           maxWidth: "450px",
-          background: "white",
-          borderRadius: "25px",
-          padding: "25px",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+          background: "#fff",
+          borderRadius: "20px",
+          padding: "30px",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
         }}
       >
-        <div
-          style={{
-            textAlign: "center",
-            fontSize: "60px",
-            marginBottom: "10px",
-          }}
-        >
-          🏠
-        </div>
-
         <h2
           style={{
             textAlign: "center",
             color: "#00C853",
-            marginBottom: "5px",
+            marginBottom: "8px",
           }}
         >
           Delivery Address
@@ -82,11 +75,12 @@ export default function DeliveryAddress() {
             fontSize: "14px",
           }}
         >
-          Add your delivery details for quick grocery delivery
+          Enter your delivery details.
         </p>
 
         <input
-          placeholder="👤 Full Name"
+          type="text"
+          placeholder="Full Name"
           value={form.name}
           onChange={(e) =>
             setForm({ ...form, name: e.target.value })
@@ -95,7 +89,8 @@ export default function DeliveryAddress() {
         />
 
         <input
-          placeholder="🏠 Flat / House No."
+          type="text"
+          placeholder="Flat / House No."
           value={form.flat}
           onChange={(e) =>
             setForm({ ...form, flat: e.target.value })
@@ -104,25 +99,21 @@ export default function DeliveryAddress() {
         />
 
         <input
-          placeholder="🏢 Apartment / Building Name"
+          type="text"
+          placeholder="Apartment / Building"
           value={form.apartment}
           onChange={(e) =>
-            setForm({
-              ...form,
-              apartment: e.target.value,
-            })
+            setForm({ ...form, apartment: e.target.value })
           }
           style={inputStyle}
         />
 
         <input
-          placeholder="📍 Area / Location"
+          type="text"
+          placeholder="Area / Location"
           value={form.location}
           onChange={(e) =>
-            setForm({
-              ...form,
-              location: e.target.value,
-            })
+            setForm({ ...form, location: e.target.value })
           }
           style={inputStyle}
         />
@@ -133,16 +124,16 @@ export default function DeliveryAddress() {
             width: "100%",
             padding: "14px",
             background: "#00C853",
-            color: "white",
+            color: "#fff",
             border: "none",
             borderRadius: "12px",
-            fontWeight: "bold",
-            fontSize: "15px",
+            fontSize: "16px",
+            fontWeight: "600",
             cursor: "pointer",
             marginTop: "10px",
           }}
         >
-          Save Address & Continue
+          Save Address
         </button>
       </div>
     </div>
@@ -153,9 +144,9 @@ const inputStyle = {
   width: "100%",
   padding: "14px",
   marginBottom: "15px",
-  borderRadius: "12px",
   border: "1px solid #ddd",
-  fontSize: "14px",
+  borderRadius: "10px",
+  fontSize: "15px",
   outline: "none",
   boxSizing: "border-box",
 };

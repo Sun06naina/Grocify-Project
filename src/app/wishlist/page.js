@@ -5,12 +5,21 @@ import { useEffect, useState } from "react";
 export default function WishlistPage() {
   const [wishlist, setWishlist] = useState([]);
 
-  useEffect(() => {
-    const savedWishlist =
-      JSON.parse(localStorage.getItem("wishlist")) || [];
+ useEffect(() => {
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
 
-    setWishlist(savedWishlist);
-  }, []);
+  if (isLoggedIn !== "true") {
+    alert("Please login first.");
+
+    window.location.href = "/auth/login";
+    return;
+  }
+
+  const savedWishlist =
+    JSON.parse(localStorage.getItem("wishlist")) || [];
+
+  setWishlist(savedWishlist);
+}, []);
 
   const removeItem = (id) => {
     const updatedWishlist = wishlist.filter(
@@ -74,15 +83,17 @@ export default function WishlistPage() {
               }}
             >
               <img
-                src={item.image}
-                alt={item.name}
-                style={{
-                  width: "90px",
-                  height: "90px",
-                  objectFit: "cover",
-                  borderRadius: "10px",
-                }}
-              />
+  src={item.image}
+  alt={item.name}
+  loading="lazy"
+  decoding="async"
+  style={{
+    width: "90px",
+    height: "90px",
+    objectFit: "cover",
+    borderRadius: "10px",
+  }}
+/>
 
               <div style={{ flex: 1 }}>
                 <h3>{item.name}</h3>

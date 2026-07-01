@@ -23,11 +23,33 @@ console.log("Sending OTP to:", email);
       to: email,
       subject: "Grocify OTP Verification",
       html: `
-        <h2>Welcome to Grocify</h2>
-        <p>Your OTP is:</p>
-        <h1>${otp}</h1>
-        <p>This OTP is valid for login verification.</p>
-      `,
+<div style="font-family:Arial,sans-serif;padding:20px;">
+  <h2 style="color:#16a34a;">🛒 Welcome to Grocify</h2>
+
+  <p>Your verification code is:</p>
+
+  <div style="
+      font-size:32px;
+      font-weight:bold;
+      letter-spacing:6px;
+      background:#f5f5f5;
+      display:inline-block;
+      padding:12px 20px;
+      border-radius:8px;">
+      ${otp}
+  </div>
+
+  <p style="margin-top:20px;">
+    This OTP is valid for <b>5 minutes</b>.
+  </p>
+
+  <p>If you didn't request this OTP, you can ignore this email.</p>
+
+  <br>
+
+  <small>Team Grocify ❤️</small>
+</div>
+`,
     });
     console.log("OTP sent successfully");
 

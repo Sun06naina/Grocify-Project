@@ -70,125 +70,71 @@ export default function VerifyOTPPage() {
   };
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "#f5f5f5",
-        padding: "20px",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "420px",
-          background: "white",
-          padding: "30px",
-          borderRadius: "20px",
-          boxShadow: "0 5px 20px rgba(0,0,0,0.1)",
-        }}
-      >
-        <div
-          style={{
-            textAlign: "center",
-            fontSize: "60px",
-            marginBottom: "10px",
-          }}
-        >
-          🔐
-        </div>
+  <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+    <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8">
 
-        <h2
-          style={{
-            textAlign: "center",
-            color: "#00C853",
-            marginBottom: "10px",
-          }}
-        >
+      {/* Logo */}
+      <div className="text-center">
+        <div className="text-5xl">🔐</div>
+
+        <h1 className="text-3xl font-bold text-green-600 mt-3">
           Verify OTP
-        </h2>
+        </h1>
 
-        <p
-          style={{
-            textAlign: "center",
-            color: "#666",
-            marginBottom: "10px",
-          }}
-        >
-          OTP sent to
+        <p className="text-gray-500 mt-2">
+          We've sent a verification code to
         </p>
 
-        <p
-          style={{
-            textAlign: "center",
-            fontWeight: "bold",
-            marginBottom: "20px",
-          }}
-        >
+        <p className="font-semibold text-gray-700 break-all mt-1">
           {email}
         </p>
-
-        <p
-          style={{
-            textAlign: "center",
-            color: "red",
-            fontWeight: "bold",
-            marginBottom: "15px",
-          }}
-        >
-          OTP expires in: {formatTime(timeLeft)}
-        </p>
-
-        <input
-          type="text"
-          placeholder="Enter OTP"
-          value={otp}
-          onChange={(e) => setOtp(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "14px",
-            border: "1px solid #ddd",
-            borderRadius: "10px",
-            marginBottom: "15px",
-            boxSizing: "border-box",
-          }}
-        />
-
-        <button
-          onClick={handleVerify}
-          style={{
-            width: "100%",
-            padding: "14px",
-            background: "#00C853",
-            color: "white",
-            border: "none",
-            borderRadius: "10px",
-            fontWeight: "bold",
-            cursor: "pointer",
-            marginBottom: "10px",
-          }}
-        >
-          Verify OTP
-        </button>
-
-        <button
-          onClick={handleResendOTP}
-          style={{
-            width: "100%",
-            padding: "14px",
-            background: "white",
-            color: "#00C853",
-            border: "2px solid #00C853",
-            borderRadius: "10px",
-            fontWeight: "bold",
-            cursor: "pointer",
-          }}
-        >
-          Resend OTP
-        </button>
       </div>
-    </main>
-  );
+
+      {/* Timer */}
+      <div className="mt-6 text-center">
+        <span className="inline-block bg-red-100 text-red-600 px-4 py-2 rounded-full font-semibold">
+          Expires in {formatTime(timeLeft)}
+        </span>
+      </div>
+
+      {/* OTP */}
+      <input
+        type="text"
+        maxLength={6}
+        placeholder="Enter 6-digit OTP"
+        value={otp}
+        onChange={(e) => setOtp(e.target.value)}
+        className="w-full mt-6 border rounded-xl px-4 py-3 text-center text-xl tracking-[8px] focus:outline-none focus:ring-2 focus:ring-green-500"
+      />
+
+      {/* Verify */}
+      <button
+        onClick={handleVerify}
+        className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold transition"
+      >
+        Verify OTP
+      </button>
+
+      {/* Resend */}
+      <button
+        onClick={handleResendOTP}
+        className="w-full mt-3 border border-green-600 text-green-600 hover:bg-green-50 py-3 rounded-xl font-semibold transition"
+      >
+        Resend OTP
+      </button>
+
+      {/* Back */}
+      <p className="text-center text-gray-600 mt-6">
+        Wrong email?{" "}
+        <span
+          onClick={() => router.push("/auth/login")}
+          className="text-green-600 font-semibold cursor-pointer"
+        >
+          Back to Login
+        </span>
+      </p>
+
+    </div>
+  </div>
+);
 }
