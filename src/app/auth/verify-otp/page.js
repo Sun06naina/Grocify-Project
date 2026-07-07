@@ -64,7 +64,20 @@ export default function VerifyOTPPage() {
       alert("Invalid OTP");
     }
   };
+localStorage.setItem(
+ "isLoggedIn",
+ "true"
+);
 
+
+if(localStorage.getItem("newUser") === "true")
+{
+ router.push("/profile");
+}
+else
+{
+ router.push("/final-home");
+}
   const handleResendOTP = () => {
     alert("Resend OTP functionality coming soon");
   };

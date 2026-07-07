@@ -19,10 +19,10 @@ export default function FinalHome() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [maxPrice, setMaxPrice] = useState(1000);
-
+  const [sortBy, setSortBy] = useState("relevance");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [address, setAddress] = useState(null);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     setProducts(productsData);
 
@@ -35,30 +35,83 @@ export default function FinalHome() {
       setAddress(JSON.parse(savedAddress));
     }
   }, []);
+  const handleSearch = async () => {
+  if (searchTerm.trim().length < 2) {
+    setProducts(productsData);
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const res = await fetch(
+      `/api/search?domain=blinkit&search_term=${encodeURIComponent(searchTerm)}`
+    );
+
+    const data = await res.json();
+
+    const results = data?.response?.results || [];
+
+    const apiProducts = results.map((item, index) => ({
+  id: item.item_id || index,
+  name: item.product_name,
+  price: Number(item.selling_price),
+  image: item.images?.[0] || "",
+  brand: item.brand,
+  quantity: item.quantity,
+  category: "API",
+  rating: Number(item.rating || 0),
+  discount: Number(item.discount_percentage || 0),
+}));
+
+    setProducts(apiProducts);
+  } catch (err) {
+    console.error(err);
+  }
+
+  setLoading(false);
+};
+
 
   const categories = [
     "All",
     ...new Set(productsData.map((p) => p.category)),
   ];
+let filteredProducts = products.filter((item) => {
+  const matchesCategory =
+    selectedCategory === "All" ||
+    item.category === selectedCategory ||
+    item.category === "API";
 
-  const filteredProducts = products.filter((item) => {
-    const matchesCategory =
-      selectedCategory === "All" ||
-      item.category === selectedCategory;
+  const matchesSearch = item.name
+    ?.toLowerCase()
+    .includes(searchTerm.toLowerCase());
 
-    const matchesSearch = item.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+  const matchesPrice = Number(item.price) <= maxPrice;
 
-    const matchesPrice = item.price <= maxPrice;
+  return matchesCategory && matchesSearch && matchesPrice;
+});
 
-    return (
-      matchesCategory &&
-      matchesSearch &&
-      matchesPrice
-    );
-  });
+// Sorting
+if (sortBy === "priceLow") {
+  filteredProducts.sort((a, b) => Number(a.price) - Number(b.price));
+}
 
+if (sortBy === "priceHigh") {
+  filteredProducts.sort((a, b) => Number(b.price) - Number(a.price));
+}
+
+if (sortBy === "rating") {
+  filteredProducts.sort(
+    (a, b) => Number(b.rating || 0) - Number(a.rating || 0)
+  );
+}
+
+if (sortBy === "discount") {
+  filteredProducts.sort(
+    (a, b) => Number(b.discount || 0) - Number(a.discount || 0)
+  );
+}
   const addToCart = (item) => {
     const login = localStorage.getItem("isLoggedIn");
 
@@ -213,35 +266,44 @@ export default function FinalHome() {
       </div>
     )}
 
-    {/* SEARCH */}
+  {/* SEARCH */}
 
-    <div
-      style={{
-        background: "white",
-        display: "flex",
-        alignItems: "center",
-        padding: "12px 15px",
-        borderRadius: "15px",
-        marginBottom: "20px",
-        boxShadow: "0 2px 8px rgba(0,0,0,.08)",
-      }}
-    >
-      <FiSearch color="#666" />
+<div
+  style={{
+    background: "white",
+    display: "flex",
+    alignItems: "center",
+    padding: "12px 15px",
+    borderRadius: "15px",
+    marginBottom: "20px",
+    boxShadow: "0 2px 8px rgba(0,0,0,.08)",
+  }}
+>
+  <FiSearch
+    color="#666"
+    style={{ cursor: "pointer" }}
+    onClick={handleSearch}
+  />
 
-      <input
-        type="text"
-        placeholder="Search groceries..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={{
-          border: "none",
-          outline: "none",
-          marginLeft: "10px",
-          width: "100%",
-          fontSize: "15px",
-        }}
-      />
-    </div>
+  <input
+    type="text"
+    placeholder="Search groceries..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    onKeyDown={(e) => {
+      if (e.key === "Enter") {
+        handleSearch();
+      }
+    }}
+    style={{
+      border: "none",
+      outline: "none",
+      marginLeft: "10px",
+      width: "100%",
+      fontSize: "15px",
+    }}
+  />
+</div>
 
     {/* CATEGORIES */}
 
@@ -332,21 +394,39 @@ export default function FinalHome() {
       />
     </div>
 
-    {/* PRODUCTS */}
-
     <div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px",
+  }}
+>
+  <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+    <h3 style={{ margin: 0 }}>Products</h3>
+
+    <select
+      value={sortBy}
+      onChange={(e) => setSortBy(e.target.value)}
       style={{
-        display: "flex",
-        justifyContent: "space-between",
-        marginBottom: "15px",
+        padding: "8px 12px",
+        borderRadius: "8px",
+        border: "1px solid #ddd",
+        cursor: "pointer",
       }}
     >
-      <h3>Products</h3>
+      <option value="relevance">Relevance</option>
+      <option value="priceLow">Price: Low to High</option>
+      <option value="priceHigh">Price: High to Low</option>
+      <option value="rating">Rating</option>
+      <option value="discount">Discount</option>
+    </select>
+  </div>
 
-      <span style={{ color: "#666" }}>
-        {filteredProducts.length} Items
-      </span>
-    </div>
+  <span style={{ color: "#666" }}>
+    {filteredProducts.length} Items
+  </span>
+</div>
 
     <div
       style={{
@@ -356,6 +436,7 @@ export default function FinalHome() {
         gap: "16px",
       }}
     >
+      
       {filteredProducts.map((item) => (
         <div
           key={item.id}
