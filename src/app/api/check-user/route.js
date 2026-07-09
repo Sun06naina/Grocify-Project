@@ -1,19 +1,23 @@
 import { NextResponse } from "next/server";
+import connectDB from "@/lib/mongodb";
+import User from "@/models/User";
 
 export async function POST(req) {
-  const { email } = await req.json();
+  try {
+    await connectDB();
 
-  // temporary localStorage replacement
-  // later connect database here
+    const { email } = await req.json();
 
-  const existingUsers = [
-    "test@gmail.com",
-    "user@gmail.com"
-  ];
+    const user = await User.findOne({ email });
 
-  const exists = existingUsers.includes(email);
+    return NextResponse.json({
+      exists: !!user,
+    });
+  } catch (error) {
+    console.log(error);
 
-  return NextResponse.json({
-    exists
-  });
+    return NextResponse.json({
+      exists: false,
+    });
+  }
 }

@@ -18,6 +18,7 @@ export default function Signup() {
       return;
     }
 
+
     if (!agree) {
       alert("Please accept the Terms & Conditions");
       return;
@@ -26,9 +27,25 @@ export default function Signup() {
     localStorage.setItem("name", name);
     localStorage.setItem("email", email);
     localStorage.setItem("phone", phone);
+    localStorage.setItem("newUser", "true");
 
     try {
       setLoading(true);
+      const check = await fetch("/api/check-user", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ email }),
+});
+
+const userData = await check.json();
+
+if (userData.exists) {
+  alert("Account already exists. Please login.");
+  router.push("/auth/login");
+  return;
+}
 
       const res = await fetch("/api/send-otp", {
         method: "POST",
